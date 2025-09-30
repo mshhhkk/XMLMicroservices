@@ -1,0 +1,75 @@
+# --- OS ---
+Thumbs.db
+.DS_Store
+
+# --- Visual Studio / .NET build ---
+.vs/
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+artifacts/
+Debug*/
+Release*/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- Rider / JetBrains / VS Code ---
+.idea/
+*.sln.iml
+.vscode/
+
+# --- NuGet / Packages ---
+packages/
+*.nupkg
+*.snupkg
+.nuget/packages/
+
+# --- Test outputs ---
+TestResults/
+*.coverage
+*.coveragexml
+*.trx
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Publish output ---
+publish/
+
+# --- Resharper/StyleCop caches ---
+_ReSharper*/
+*.DotSettings.user
+StyleCop.Cache
+
+# --- Docker / Compose ---
+.env
+docker-compose.override.yml
+# Локальные тома/данные (если монтируешь)
+data/
+volumes/
+docker-data/
+rabbitmq-data/
+
+# --- SQLite ---
+*.db
+*.db-wal
+*.db-shm
+# Если нужно хранить ОДИН эталонный файл БД в репо — раскоммить следующую строку
+# и положи seed-базу в db/seed.sqlite
+!db/
+!db/seed.sqlite
+
+# --- Configs с локальными секретами ---
+appsettings.*.local.json
+appsettings.Local.json
+secrets.json
+
+# --- Misc ---
+*.opendb
+*.aps
+*.tlog
