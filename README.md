@@ -28,9 +28,9 @@
    sudo apt-get install -y docker.io docker-compose-plugin
    # (опционально) чтобы не писать sudo
    sudo usermod -aG docker $USER && newgrp docker
-   docker version
-   docker compose version
-   ```
+ ```
+> ⚠️ Если не добавить пользователя в группу докер, запускать котейнер можно только через суперюзера под sudo
+  
 ---
 ## Быстрый старт (Docker)
 # PowerShell (Windows)
@@ -63,9 +63,9 @@
    cd ..\XMLMicroservice
    ```
 2. Подготовить папки
- ```bash
-   cd ~/source/repos/XMLMicroservices
-   ```
+    ```bash
+    mkdir -p parser-in parser-bad db
+    ```
 3. Соберите и поднимите сервисы:
    ```bash
    docker compose down -v
