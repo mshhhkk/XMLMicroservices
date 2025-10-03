@@ -6,25 +6,27 @@ using FileParserService.Infrastructure.Processing;
 using FileParserService.Infrastructure.Xml;
 using FileParserService.Workers;
 using Shared.Options;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Configuration.Sources.Clear();
+builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddCommandLine(args);
+
+
+builder.Services.Configure<WatchOptions>(builder.Configuration.GetSection("Watch"));
+builder.Services.Configure<RabbitOptions>(builder.Configuration.GetSection("RabbitMQ"));
+
+
+builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+builder.Services.AddSingleton<IFileEnumerator, DirectoryFileEnumerator>();
+builder.Services.AddSingleton<IFileMover, FileMover>();
+builder.Services.AddSingleton<IXmlParser, LinqXmlParser>();
+builder.Services.AddSingleton<IStateMutator, RandomStateMutator>();
+builder.Services.AddSingleton<IFileProcessor, FileProcessor>();
+
 builder.Services.AddHostedService<Worker>();
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((ctx, services) =>
-    {
-        services.Configure<WatchOptions>(ctx.Configuration.GetSection("Watch"));
-        services.Configure<RabbitOptions>(ctx.Configuration.GetSection("RabbitMQ"));
-
-        services.AddSingleton<IRabbitMqService, RabbitMqService>();
-        services.AddSingleton<IFileEnumerator, DirectoryFileEnumerator>();
-        services.AddSingleton<IFileMover, FileMover>();
-        services.AddSingleton<IXmlParser, LinqXmlParser>();
-        services.AddSingleton<IStateMutator, RandomStateMutator>();
-        services.AddSingleton<IFileProcessor, FileProcessor>();
-
-        services.AddHostedService<Worker>();
-    })
-    .Build();
-
-await host.RunAsync();
+await builder.Build().RunAsync();

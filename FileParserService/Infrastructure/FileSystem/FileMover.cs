@@ -7,13 +7,13 @@ namespace FileParserService.Infrastructure.FileSystem;
 
 public class FileMover : IFileMover
 {
-    private readonly string _badFolder;
+    private readonly string _failFolder;
     private readonly ILogger<FileMover> _log;
 
     public FileMover(IOptions<WatchOptions> opt, ILogger<FileMover> log)
     {
-        _badFolder = opt.Value.FailedFolder;
-        Directory.CreateDirectory(_badFolder);
+        _failFolder = opt.Value.FailedFolder;
+        Directory.CreateDirectory(_failFolder);
         _log = log;
     }
 
@@ -34,13 +34,13 @@ public class FileMover : IFileMover
     {
         try
         {
-            var dest = Path.Combine(_badFolder, Path.GetFileName(path));
+            var dest = Path.Combine(_failFolder, Path.GetFileName(path));
             File.Move(path, dest, overwrite: true);
-            _log.LogInformation("Moved bad file {File} → {Dest}", path, dest);
+            _log.LogInformation("Moved fail file {File} → {Dest}", path, dest);
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to move bad file {File}", path);
+            _log.LogError(ex, "Failed to move fail file {File}", path);
         }
     }
 }
