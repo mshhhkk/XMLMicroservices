@@ -60,12 +60,12 @@ services:
       RabbitMQ__RoutingKey: modules.update
       RabbitMQ__Queue: modules.db
       Watch__IncomeFolder: "./in"
-      Watch__FailedFolder: "./bad"
+      Watch__FailedFolder: "./fail"
       Watch__IntervalMs: "1000"
       Watch__MaxParallel: "4"
     volumes:
       - ./parser-in:/app/in
-      - ./parser-bad:/app/bad
+      - ./parser-bad:/app/fail
 
   dataprocessor:
     build:
