@@ -17,7 +17,6 @@
     depends_on:
       - rabbit
     environment:
-      # RabbitMQ — используем имя сервиса, НЕ localhost
       RabbitMQ__HostName: rabbit
       RabbitMQ__Port: "5672"
       RabbitMQ__UserName: guest
@@ -31,7 +30,6 @@
       Watch__IntervalMs: "1000"
       Watch__MaxParallel: "4"
     volumes:
-      # маппим папки хоста для удобного теста
       - ./parser-in:/app/in
       - ./parser-bad:/app/bad
     restart: unless-stopped

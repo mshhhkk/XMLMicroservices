@@ -91,3 +91,6 @@ launchSettings.json
 *.opendb
 *.aps
 *.tlog
+/FileParserService/appsettings.json
+/db
+/XMLMicroservices.sln
