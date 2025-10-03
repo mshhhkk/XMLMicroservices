@@ -1,0 +1,58 @@
+﻿services:
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+
+  fileparser:
+    build:
+      context: .
+      dockerfile: FileParserService/Dockerfile
+    depends_on:
+      - rabbit
+    environment:
+      # RabbitMQ — используем имя сервиса, НЕ localhost
+      RabbitMQ__HostName: rabbit
+      RabbitMQ__Port: "5672"
+      RabbitMQ__UserName: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__Exchange: modules.topic
+      RabbitMQ__RoutingKey: modules.update
+      RabbitMQ__Queue: modules.db
+      # Watch-папки (относительно /app в контейнере)
+      Watch__IncomeFolder: "./in"
+      Watch__FailedFolder: "./fail"
+      Watch__IntervalMs: "1000"
+      Watch__MaxParallel: "4"
+    volumes:
+      # маппим папки хоста для удобного теста
+      - ./parser-in:/app/in
+      - ./parser-bad:/app/bad
+    restart: unless-stopped
+
+  dataprocessor:
+    build:
+      context: .
+      dockerfile: DataProcessorService/Dockerfile
+    depends_on:
+      - rabbit
+    environment:
+      RabbitMQ__HostName: rabbit
+      RabbitMQ__Port: "5672"
+      RabbitMQ__UserName: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__Exchange: modules.topic
+      RabbitMQ__RoutingKey: modules.update
+      RabbitMQ__Queue: modules.db
+      RabbitMQ__Prefetch: "50"
+      # путь к файлу SQLite внутри контейнера
+      SQLite__DbPath: "/app/db/data.sqlite"
+    volumes:
+      - ./db:/app/db          # чтобы файл БД был на хосте
+    restart: unless-stopped
