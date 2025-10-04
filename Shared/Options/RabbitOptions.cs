@@ -2,14 +2,14 @@
 
 public class RabbitOptions
 {
-    public string HostName { get; set; } = "localhost";
-    public int Port { get; set; } = 5672;
-    public string UserName { get; set; } = "guest";
-    public string Password { get; set; } = "guest";
+    public string HostName { get; set; } 
+    public int Port { get; set; } 
+    public string UserName { get; set; } 
+    public string Password { get; set; } 
 
-    public string Exchange { get; set; } = "modules.topic";
-    public string RoutingKey { get; set; } = "modules.update";
-    public string Queue { get; set; } = "modules.db";
+    public string Exchange { get; set; }
+    public string RoutingKey { get; set; } 
+    public string Queue { get; set; } 
 
     public int Prefetch { get; set; } = 50;
 }

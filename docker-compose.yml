@@ -31,7 +31,7 @@
       Watch__MaxParallel: "4"
     volumes:
       - ./parser-in:/app/in
-      - ./parser-bad:/app/bad
+      - ./parser-bad:/app/fail
     restart: unless-stopped
 
   dataprocessor:
@@ -52,5 +52,5 @@
       # путь к файлу SQLite внутри контейнера
       SQLite__DbPath: "/app/db/data.sqlite"
     volumes:
-      - ./db:/app/db          # чтобы файл БД был на хосте
+      - ./db:/app/db          
     restart: unless-stopped

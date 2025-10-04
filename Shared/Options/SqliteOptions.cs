@@ -2,5 +2,5 @@
 
 public class SqliteOptions
 {
-    public string DbPath { get; set; } = ".\\data\\modules.db";
+    public string DbPath { get; set; } //= ".\\data\\modules.db";
 }
