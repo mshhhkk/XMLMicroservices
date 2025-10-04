@@ -12,27 +12,71 @@
 - Docker & Docker Compose
 
 ---
+## Требования и установка
+### Вариант A: Windows + Docker Desktop (без WSL)
+1. Скачайте и установите **Docker Desktop for Windows**.
 
-## Начало работы
+2. Во время установки оставьте опцию Use WSL 2 based engine включённой (по умолчанию).
 
-### Быстрый старт (Docker)
-1. В корне репозитория создайте папки для демонстрации:
+3. Откройте Docker Desktop и дождитесь статуса Running
+
+> Дополнительных настроек WSL не требуется — все команды ниже выполняются в PowerShell. SQLite-CLI ставить не обязательно — в примерах ниже используется одноразовый контейнер nouchka/sqlite3.
+
+### Вариант B: WSL/Linux
+  ```bash
+   sudo apt-get update
+   sudo apt-get install -y docker.io docker-compose-plugin
+   # (опционально) чтобы не писать sudo
+   sudo usermod -aG docker $USER && newgrp docker
+ ```
+> ⚠️ Если не добавить пользователя в группу docker, запускать котейнер можно только через суперюзера под sudo
+  
+---
+## Быстрый старт (Docker)
+# PowerShell (Windows)
+Создаём каталоги для входных файлов и БД, собираем и запускаем контейнеры.
+1. Перейти в корень репозитория
    ```powershell
-   mkdir parser-in, parser-bad, db
+   cd ..\XMLMicroservice
    ```
-2. Соберите и поднимите сервисы:
+2. Подготовить папки
+   ```powershell
+   md parser-in, parser-bad, db
+   ```
+3. Соберите и поднимите сервисы:
    ```powershell
    docker compose down -v
    docker compose build --no-cache
    docker compose up -d --force-recreate
    ```
-3. Проверьте состояние:
+4. Проверьте состояние:
    ```powershell
    docker compose ps
    ```
    В колонке `STATUS` для `rabbit`, `xmlmicroservices-fileparser-1`, `xmlmicroservices-dataprocessor-1` должно быть `Up`.
 
-4. Откройте UI RabbitMQ: **http://localhost:15672** (логин/пароль: `guest/guest`).
+5. Откройте UI RabbitMQ: **http://localhost:15672** (логин/пароль: `guest/guest`).
+
+# Bash (WSL/Linux)
+1. Перейти в корень репозитория
+   ```bash
+   cd ..\XMLMicroservice
+   ```
+2. Подготовить папки
+    ```bash
+    mkdir -p parser-in parser-bad db
+    ```
+3. Соберите и поднимите сервисы:
+   ```bash
+   docker compose down -v
+   docker compose build --no-cache
+   docker compose up -d --force-recreate
+   ```
+4. Проверьте состояние:
+   ```bash
+   docker compose ps
+   ```
+Откройте UI RabbitMQ: **http://localhost:15672** (логин/пароль: `guest/guest`).
 
 > ⚠️ Конфигурация берётся **только из переменных окружения** в `docker-compose.yml`. `appsettings*.json` не читаются.
 
@@ -60,12 +104,12 @@ services:
       RabbitMQ__RoutingKey: modules.update
       RabbitMQ__Queue: modules.db
       Watch__IncomeFolder: "./in"
-      Watch__FailedFolder: "./bad"
+      Watch__FailedFolder: "./fail"
       Watch__IntervalMs: "1000"
       Watch__MaxParallel: "4"
     volumes:
       - ./parser-in:/app/in
-      - ./parser-bad:/app/bad
+      - ./parser-bad:/app/fail
 
   dataprocessor:
     build:
